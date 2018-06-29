@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "name": "Witness",
+    "img": "../img.png",
+  },
+  {
+    "id": 2,
+    "name": "Anton Uralskiy",
+    "img": "../anton.jpg",
+  },
+  {
+    "id": 3,
+    "name": "Kot",
+    "img": "../kot.jpg",
+  },
+  {
+    "id": 4,
+    "name": "Remove Kebab",
+    "img": "../remove-kebab.jpg",
+  }
+]
