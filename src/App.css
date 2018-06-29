@@ -1,0 +1,57 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 80px;
+}
+
+.App-header {
+  background-color: #222;
+  height: 150px;
+  padding: 20px;
+  color: white;
+}
+
+.App-title {
+  font-size: 1.5em;
+}
+
+.App-intro {
+  font-size: large;
+}
+
+.collection-item {
+    text-align: left;
+}
+
+.Chat__body {
+    margin: .5rem 0 1rem 0;
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+    min-height: 500px;
+}
+
+.Chat__icon-send {
+    cursor: pointer;
+    margin-top: 30px;
+}
+
+.Chat__input {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+.Chat__header {
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+}
+
+@keyframes App-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
