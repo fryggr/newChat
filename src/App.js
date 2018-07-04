@@ -11,6 +11,7 @@ import {
 } from "react-materialize";
 import svidetel from "./img.png";
 import { PersonList } from "./PersonList/PersonList.js";
+import load from './load';
 
 let PERSONS = [
   {
@@ -40,16 +41,26 @@ class App extends Component {
     constructor(props){
         super(props)
 
-        this.state = { persons: [PERSONS] };
+        this.state = { persons: PERSONS };
 
     }
 
+    // loadData() {
+    //     load(PERSONS, 'GET').then(persons => {
+    //       this.initialData = JSON.parse(persons);
+    //       this.setState({
+    //         persons: this.initialData
+    //       });
+    //     });
+    //   }
+
     render() {
+        console.log(this.state.persons);
         return (
             <div className="App container Chat">
                 <Row>
                     <Col s={4} className="grid-example">
-                        <PersonList />
+                        <PersonList persons={this.state.persons}/>
                     </Col>
                     <Col s={8} className="grid-example">
                         <div className="Chat__body row">
