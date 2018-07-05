@@ -34,26 +34,7 @@ export class PersonList extends React.Component{
                     <span>Svidetel</span>
                     <Badge>1</Badge>
                 </CollectionItem>
-                <CollectionItem className="Chat__list" href="#!">
-                    <img src={anton} className="Chat__list-usericon" />
-                    <span>Anton Uralskiy</span>
-                    <Badge newIcon>4</Badge>
-                </CollectionItem>
-                <CollectionItem className="Chat__list" href="#!">
-                    <img src={kot} className="Chat__list-usericon" />
-                    <span>Kot</span>
-                    <Badge>14</Badge>
-                </CollectionItem>
-                <CollectionItem className="Chat__list" href="#!">
-                    <img src={removekebab} className="Chat__list-usericon" />
-                    <span>Remove Kebab</span>
-                    <Badge>14</Badge>
-                </CollectionItem>
-                <CollectionItem className="Chat__list" href="#!">
-                    <img src={poehavshiy} className="Chat__list-usericon" />
-                    <span>Poehavshiy</span>
-                    <Badge>14</Badge>
-                </CollectionItem>*/
+                */
             }
             </Collection>
         </Col>

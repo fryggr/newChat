@@ -16,11 +16,11 @@ export class ChatHeader extends React.Component{
     }
 
     render() {
-        console.log(this.props.onPersonView);
+        console.log(this.props.onPersonView.name);
         return (
             <Col s={12} className="Chat__header">
                 <div className="Chat__header-icon">
-                    <img src={this.props.onPersonView.image} alt="img" className="Chat__avatar"/>
+                    <img src={this.props.onPersonView.img} alt="img" className="Chat__avatar"/>
                 </div>
                 <div className="Chat__header-username"><b>{this.props.onPersonView.name}</b></div>
             </Col>

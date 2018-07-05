@@ -35,6 +35,31 @@
     min-height: 500px;
 }
 
+.Chat__body-wrapper{
+    min-height: 500px;
+}
+
+.Chat__body-wrapper.hidden{
+    display: none;
+}
+
+.Chat__body-wrapper_preview {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.material-icons.grey {
+    color: #c2c2c2!important;
+    background-color: transparent!important;
+}
+
+.Chat__text-prev{
+    color: #c2c2c2;
+    font-size: 18px;
+    margin: 0;
+}
+
 .Chat__icon-send {
     cursor: pointer;
     margin-top: 30px;
