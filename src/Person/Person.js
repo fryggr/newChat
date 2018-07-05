@@ -17,13 +17,12 @@ export class Person extends React.Component{
     }
 
     render() {
-        console.log('this is person.js')
-        // const imageUrl = this.props.image;
+
         return (
-            <div className="Chat__list" href="#!">
-                <img src="" className="Chat__list-usericon" />
-                <span>this.props.name</span>
-            </div>
+            <CollectionItem className="Chat__list" href="#!" onClick={this.props.onView}>
+                <img src={this.props.image} className="Chat__list-usericon" />
+                <span>{this.props.name}</span>
+            </CollectionItem >
         )
     }
 }

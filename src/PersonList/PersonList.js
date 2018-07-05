@@ -10,11 +10,6 @@ import {
     Badge,
     Input
 } from "react-materialize";
-import svidetel from "../img.png";
-import anton from "../anton.jpg";
-import kot from "../kot.jpg";
-import removekebab from "../remove-kebab.png";
-import poehavshiy from "../poehavshiy.jpg";
 import { Person } from "../Person/Person"
 
 export class PersonList extends React.Component{
@@ -23,18 +18,14 @@ export class PersonList extends React.Component{
     }
 
     render() {
-        console.log(this.props.persons.map((el) => {console.log(el.id)}));
+        const onPersonView = this.props.onView;
         return (
-            <div >
+            <Col s={4} className="grid-example">
+                <Collection>
                 {
-                    this.props.persons.map((el) => {
-                        <Person
-                            key={el.id}
-                            name={el.name}
-                            image={el.img}
-                        />
-                    })
-
+                    this.props.persons.map(el =>
+                        <Person key={el.id} name={el.name} image={el.img} onView={onPersonView.bind(null, el)}/>
+                    )
                 }
                 {
                 /*
@@ -64,7 +55,8 @@ export class PersonList extends React.Component{
                     <Badge>14</Badge>
                 </CollectionItem>*/
             }
-        </div>
+            </Collection>
+        </Col>
 
         )
     }
