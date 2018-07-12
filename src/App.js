@@ -11,6 +11,7 @@ import {
 } from "react-materialize";
 import { PersonList } from "./PersonList/PersonList.js";
 import { ChatHeader } from "./ChatHeader/ChatHeader.js";
+import { ChatBody } from "./ChatBody/ChatBody.js";
 import load from './load';
 
 let PERSONS = [
@@ -51,9 +52,10 @@ class App extends Component {
         this.chatBodyPrev = React.createRef();
         this.chatBody = React.createRef();
         this.chatInput = React.createRef();
+        this.sendIcon = React.createRef();
 
         this.onPersonView = this.onPersonView.bind(this);
-        this.handleInput = this.handleInput.bind(this);
+        this.addMessage = this.addMessage.bind(this);
     }
 
     onPersonView(person) {
@@ -63,8 +65,12 @@ class App extends Component {
         this.setState({ person: person })
     }
 
-    handleInput() {
-        console.log(this.chatInput.current);
+    addMessage() {
+        console.log(this.chatInput.current.value);
+        let mass = [];
+        mass.push(this.chatInput.current.value);
+        console.log(mass);
+        // return this.chatInput.current.value;
     }
 
     render() {
@@ -84,9 +90,13 @@ class App extends Component {
                             </div>
                             <div className="Chat__body-wrapper hidden" ref={this.chatBody}>
                                 <ChatHeader onPersonView={this.state.person} />
+                                <ChatBody addMessage={this.addMessage} />
                                 <Col s={12} className="Chat__input">
-                                    <Input s={11} label="Text message..." ref={this.chatInput} onChange={this.handleInput}/>
-                                    <Icon s={1} className="Chat__icon-send">
+                                    <Col s={11} className="input-field">
+                                        <input s={11} id="first_name" type="text" ref={this.chatInput} onChange={this.addMessage}/>
+                                        <label htmlFor="first_name">Type message...</label>
+                                    </Col>
+                                    <Icon s={1} className="Chat__icon-send" ref={this.sendIcon} >
                                         send
                                     </Icon>
                                 </Col>

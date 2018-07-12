@@ -16,7 +16,6 @@ export class ChatHeader extends React.Component{
     }
 
     render() {
-        console.log(this.props.onPersonView.name);
         return (
             <Col s={12} className="Chat__header">
                 <div className="Chat__header-icon">
