@@ -105,6 +105,15 @@
     height: 50px;
 }
 
+.Chat__message {
+    text-align: left;
+}
+
+.Chat__messages{
+    height: 342px;
+    overflow-y: auto;
+}
+
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }

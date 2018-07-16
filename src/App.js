@@ -67,11 +67,9 @@ class App extends Component {
         this.state.messages.push(this.chatInput.current.value);
         this.setState({ messages: this.state.messages });
         this.chatInput.current.value = '';
-        console.log(this.state.messages);
-    }
-
-    handleMessage() {
-        console.log(this.messages);
+        const chatMessages = document.querySelector('.Chat__messages');
+        chatMessages.scrollTo(0, chatMessages.getBoundingClientRect().bottom);
+        // document.querySelectorAll('[for="first_name"]')[0].classList.remove('active');
     }
 
     render() {
@@ -94,7 +92,7 @@ class App extends Component {
                                 <ChatBody addMessage={this.state.messages} />
                                 <Col s={12} className="Chat__input">
                                     <Col s={11} className="input-field">
-                                        <input s={11} id="first_name" type="text" ref={this.chatInput} />
+                                        <input s={11} id="first_name" type="text" ref={this.chatInput} onKeyPress={this.addMessage} />
                                         <label htmlFor="first_name">Type message...</label>
                                     </Col>
                                     <i className="material-icons Chat__icon-send" onClick={this.addMessage} >
