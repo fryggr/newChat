@@ -90,6 +90,7 @@ class App extends Component {
     }
 
     render() {
+        console.log(this.state.person);
         return (
             <div className="App container Chat">
                 <Row>
@@ -121,7 +122,7 @@ class App extends Component {
                     </Col>
                 </Row>
 
-                
+
             </div>
         );
     }
