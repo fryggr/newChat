@@ -16,14 +16,15 @@ export class ChatBody extends React.Component{
     }
 
     render() {
+        console.log(this.props.addMessage);
         return (
             <Col s={12} className="Chat__messages">
                 {
-                    this.props.addMessage.map(el =>
+
                         <ChatMessage
-                            newMessage={el}
+                            
                         />
-                    )
+
                 }
             </Col>
         )
