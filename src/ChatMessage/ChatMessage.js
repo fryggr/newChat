@@ -7,7 +7,7 @@ export class ChatMessage extends React.Component{
 
     render() {
         return (
-            <p className="Chat__message"> </p>
+            <p className="Chat__message">{this.props.message} </p>
         )
     }
 }
