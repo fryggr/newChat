@@ -1,28 +1,14 @@
-import React, {Component} from "react";
+import React from "react";
 import "./Person.css";
-import {
-    Button,
-    Icon,
-    Row,
-    Col,
-    Collection,
-    CollectionItem,
-    Badge,
-    Input
-} from "react-materialize";
+import {CollectionItem, Badge} from "react-materialize";
 
-export class Person extends React.Component{
-    constructor(props) {
-        super(props)
-    }
-
-    render() {
-
-        return (
-            <CollectionItem className="Chat__list" href="#!" onClick={this.props.onView}>
-                <img src={this.props.image} className="Chat__list-usericon" />
-                <span>{this.props.name}</span>
-            </CollectionItem >
-        )
-    }
+export const Person = props => {
+    return (
+        <CollectionItem className="Chat__list " href="#!" onClick={props.onView}>
+            <img src={props.image} className="Chat__list-usericon" />
+            <span>{props.name}</span>
+            <Badge className="Chat__list__badge">online</Badge>
+            <div className="Chat__list-wrapper disabled"></div>
+        </CollectionItem >
+    )
 }

@@ -1,33 +1,19 @@
-import React, {Component} from "react";
-import {
-    Button,
-    Icon,
-    Row,
-    Col,
-    CollectionItem,
-    Badge,
-    Input
-} from "react-materialize";
+import React from "react";
+import {Col} from "react-materialize";
 import {ChatMessage} from "./../ChatMessage/ChatMessage.js";
 
-export class ChatBody extends React.Component{
-    constructor(props) {
-        super(props);
-    }
-
-    render() {
-        return (
-            <Col s={12} className="Chat__messages">
-                {
-                    this.props.messages.map(item => {
-                        return(
-                            <ChatMessage
-                                message={item.message}
-                            />
-                        )
-                    })
-                }
-            </Col>
-        )
-    }
+export const ChatBody = props => {
+    return (
+        <Col s={12} className="Chat__messages">
+            {
+                props.messages.map(item => {
+                    return(
+                        <ChatMessage
+                            message={item.message}
+                        />
+                    )
+                })
+            }
+        </Col>
+    )
 }

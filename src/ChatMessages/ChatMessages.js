@@ -1,13 +1,7 @@
-import React, { Component } from "react";
+import React from "react";
 
-export class ChatMessages extends React.Component{
-    constructor(props) {
-        super(props)
-    }
-
-    render() {
-        return(
-            <div>{this.props.message}</div>
-        )
-    }
+export const ChatMessages = props => {
+    return(
+        <div>{props.message}</div>
+    )
 }
