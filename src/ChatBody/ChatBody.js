@@ -6,10 +6,11 @@ export const ChatBody = props => {
     return (
         <Col s={12} className="Chat__messages">
             {
-                props.messages.map(item => {
+                props.messages.map((item,index) => {
                     return(
                         <ChatMessage
                             message={item.message}
+                            key={index}
                         />
                     )
                 })

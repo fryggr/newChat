@@ -22,6 +22,11 @@ io.on('connection', function(socket){
         console.log('message: ' + msg);
         io.emit('chat message', msg);
       });
+
+      socket.on('new user', function(user){
+          console.log('new user: ' + user);
+          io.emit('new user', user);
+        });
 });
 
 http.listen(3000, function(){

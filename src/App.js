@@ -1,63 +1,58 @@
 import React, { Component } from "react";
 import "./App.css";
 import {
-    Button,
     Icon,
     Row,
-    Col,
-    CollectionItem,
-    Badge,
-    Input
+    Col
 } from "react-materialize";
 import { PersonList } from "./PersonList/PersonList.js";
 import { ChatHeader } from "./ChatHeader/ChatHeader.js";
 import { ChatBody } from "./ChatBody/ChatBody.js";
-import load from './load';
+
 import io from 'socket.io-client';
-// import chat from './chat';
 
-import anton from "./Person/img/anton.jpg";
-import svidetel from "./Person/img/ava.png";
-import kot from "./Person/img/kot.jpg";
-import poehavshiy from "./Person/img/poehavshiy.jpg";
-import removekebab from "./Person/img/remove-kebab.png";
+// import anton from "./Person/img/anton.jpg";
+// import svidetel from "./Person/img/ava.png";
+// import kot from "./Person/img/kot.jpg";
+// import poehavshiy from "./Person/img/poehavshiy.jpg";
+// import removekebab from "./Person/img/remove-kebab.png";
 
-let PERSONS = [
-    {
-        "id": 0,
-        "name": "Svidetel",
-        "messages":[],
-        "img": svidetel
-    },
-    {
-        "id": 1,
-        "name": "Anton Uralskiy",
-        "messages":[],
-        "img": anton
-    },
-    {
-        "id": 2,
-        "name": "Kot",
-        "messages":[],
-        "img": kot
-    },
-    {
-        "id": 3,
-        "name": "Remove Kebab",
-        "messages":[],
-        "img": removekebab
-    },
-    {
-        "id": 4,
-        "name": "Poehavshiy",
-        "messages":[
-            {
-                message: 'olololo'
-            }
-        ],
-        "img": poehavshiy
-    }
-];
+// let PERSONS = [
+//     {
+//         "id": 0,
+//         "name": "Svidetel",
+//         "messages":[],
+//         "img": svidetel
+//     },
+//     {
+//         "id": 1,
+//         "name": "Anton Uralskiy",
+//         "messages":[],
+//         "img": anton
+//     },
+//     {
+//         "id": 2,
+//         "name": "Kot",
+//         "messages":[],
+//         "img": kot
+//     },
+//     {
+//         "id": 3,
+//         "name": "Remove Kebab",
+//         "messages":[],
+//         "img": removekebab
+//     },
+//     {
+//         "id": 4,
+//         "name": "Poehavshiy",
+//         "messages":[
+//             {
+//                 message: 'olololo'
+//             }
+//         ],
+//         "img": poehavshiy
+//     }
+// ];
 
 class App extends Component {
 
@@ -65,7 +60,8 @@ class App extends Component {
         super(props)
 
         this.state = {
-            person: PERSONS,
+            persons: [],
+            activePerson: [],
             messages: [
                 {
                     message:"Hello!"
@@ -75,40 +71,54 @@ class App extends Component {
         this.chatBodyPrev = React.createRef();
         this.chatBody = React.createRef();
         this.chatInput = React.createRef();
-
-        this.content = React.createRef();
+        this.openChat = 0;
+        this.firstUser = 0;
 
         this.socket = io('http://localhost:3000');
+
         this.socket.on('chat message', (msg) => {
            this.addMessage(msg);
          });
+
         this.socket.on('user connected', (numberOfUsers) => {
-           console.log(numberOfUsers);
+           // console.log('user connected', numberOfUsers);
            this.numberOfUsers = numberOfUsers;
+            this.getRandomUser();
          });
+
         this.socket.on('user disconnected', (numberOfUsers) => {
-           console.log(numberOfUsers);
+           // console.log('user disconnected', numberOfUsers);
            this.numberOfUsers = numberOfUsers;
          });
+
+        this.socket.on('new user', (user) => {
+           console.log(user);
+           let newPersons = this.state.persons.slice();
+           newPersons.push(user);
+           this.setState({persons: newPersons})
+         });
+
+        // Binding
 
         this.onPersonView = this.onPersonView.bind(this);
         this.addMessage = this.addMessage.bind(this);
         this.handleKeyPress = this.handleKeyPress.bind(this);
         this.sendMessage = this.sendMessage.bind(this);
+        this.getRandomUser = this.getRandomUser.bind(this);
     }
 
     onPersonView(person) {
-        this.person = person;
-        this.chatBody.current.classList.remove("hidden");
-        this.chatBodyPrev.current.classList.add("hidden");
-        this.setState({ person: person })
+        this.openChat = 1;
+        console.log(person);
+        // this.chatBody.current.classList.remove("hidden");
+        // this.chatBodyPrev.current.classList.add("hidden");
+        this.setState({ activePerson: person })
     }
 
     addMessage(message) {
         let newMessage = {message: message}
         let messages = this.state.messages.slice();
         messages.push(newMessage);
-        console.log(messages);
         this.setState({ messages: messages });
         this.chatInput.current.value = '';
         const chatMessages = document.querySelector('.Chat__messages');
@@ -128,28 +138,58 @@ class App extends Component {
             this.socket.emit('chat message', this.chatInput.current.value);
     }
 
+    getRandomUser(){
+        function fetchJSONFile(path, callback) {
+            var httpRequest = new XMLHttpRequest();
+            httpRequest.onreadystatechange = function() {
+                if (httpRequest.readyState === 4) {
+                    if (httpRequest.status === 200) {
+                        var data = JSON.parse(httpRequest.responseText);
+                        if (callback) callback(data);
+                    }
+                }
+            };
+            httpRequest.open('GET', path);
+            httpRequest.send();
+        }
+
+        fetchJSONFile('https://randomuser.me/api/', (data) => {
+            let newUser = {};
+            newUser["key"] = Date.now();
+            newUser["name"] = `${data.results[0].name.first} ${data.results[0].name.last}`;
+            newUser["img"] = data.results[0].picture.thumbnail;
+            if(this.firstUser === 0){
+                newUser["id"] = "you"
+            }
+            else newUser["id"] = "online"
+            this.socket.emit('new user', newUser);
+        });
+    }
+
     render() {
-        console.log(this.numberOfUsers);
         return (
             <div className="App container Chat">
                 <Row>
-                    <PersonList persons={PERSONS} onView={this.onPersonView}/>
+                    <PersonList persons={this.state.persons} onView={this.onPersonView}/>
                     <Col s={8} className="grid-example">
                         <div className="Chat__body row" >
                             {
-                                this.numberOfUsers === 1 || this.numberOfUsers === undefined
+                                this.openChat === 0
                                 ?
                                 <div className="Chat__body-wrapper Chat__body-wrapper_preview">
                                     <Row className='center'>
                                         <Col s={12}>
                                           <Icon className="grey" large>forum</Icon>
-                                          <p className="Chat__text-prev">Sorry, there are currently no users online.</p>
+                                          <p className="Chat__text-prev">
+                                              {
+                                                  this.numberOfUsers < 2 || this.numberOfUsers === undefined ? "Sorry, there are currently no users online." : "Choose the chat!"
+                                              }</p>
                                         </Col>
                                     </Row>
                                 </div>
                                 :
                                 <div className="Chat__body-wrapper">
-                                    <ChatHeader onPersonView={this.state.person} />
+                                    <ChatHeader onPersonView={this.state.activePerson} />
                                     <ChatBody messages={this.state.messages} />
                                     <Col s={12} className="Chat__input">
                                         <Col s={11} className="input-field">
