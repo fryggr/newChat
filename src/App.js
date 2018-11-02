@@ -62,11 +62,8 @@ class App extends Component {
         this.state = {
             persons: [],
             activePerson: [],
-            messages: [
-                {
-                    message:"Hello!"
-                }
-            ] };
+            messages: []
+        };
 
         this.chatBodyPrev = React.createRef();
         this.chatBody = React.createRef();
@@ -80,23 +77,23 @@ class App extends Component {
            this.addMessage(msg);
          });
 
-        this.socket.on('user connected', (numberOfUsers) => {
-           // console.log('user connected', numberOfUsers);
-           this.numberOfUsers = numberOfUsers;
-            this.getRandomUser();
+        this.socket.on('user connected', (activeUsers) => {
+            this.setState({persons: activeUsers})
+           // this.numberOfUsers = numberOfUsers;
+            // this.getRandomUser();
          });
-
-        this.socket.on('user disconnected', (numberOfUsers) => {
-           // console.log('user disconnected', numberOfUsers);
-           this.numberOfUsers = numberOfUsers;
-         });
-
-        this.socket.on('new user', (user) => {
-           console.log(user);
-           let newPersons = this.state.persons.slice();
-           newPersons.push(user);
-           this.setState({persons: newPersons})
-         });
+        //
+        // this.socket.on('user disconnected', (numberOfUsers) => {
+        //    this.numberOfUsers = numberOfUsers;
+        //    this.deleteUser();
+        //  });
+        //
+        // this.socket.on('new user', (user) => {
+        //    console.log(user);
+        //    let newPersons = this.state.persons.slice();
+        //    newPersons.push(user);
+        //    this.setState({persons: newPersons})
+        //  });
 
         // Binding
 
@@ -104,7 +101,8 @@ class App extends Component {
         this.addMessage = this.addMessage.bind(this);
         this.handleKeyPress = this.handleKeyPress.bind(this);
         this.sendMessage = this.sendMessage.bind(this);
-        this.getRandomUser = this.getRandomUser.bind(this);
+        // this.getRandomUser = this.getRandomUser.bind(this);
+        this.deleteUser = this.deleteUser.bind(this);
     }
 
     onPersonView(person) {
@@ -138,32 +136,38 @@ class App extends Component {
             this.socket.emit('chat message', this.chatInput.current.value);
     }
 
-    getRandomUser(){
-        function fetchJSONFile(path, callback) {
-            var httpRequest = new XMLHttpRequest();
-            httpRequest.onreadystatechange = function() {
-                if (httpRequest.readyState === 4) {
-                    if (httpRequest.status === 200) {
-                        var data = JSON.parse(httpRequest.responseText);
-                        if (callback) callback(data);
-                    }
-                }
-            };
-            httpRequest.open('GET', path);
-            httpRequest.send();
-        }
+    // getRandomUser(){
+    //     function fetchJSONFile(path, callback) {
+    //         var httpRequest = new XMLHttpRequest();
+    //         httpRequest.onreadystatechange = function() {
+    //             if (httpRequest.readyState === 4) {
+    //                 if (httpRequest.status === 200) {
+    //                     var data = JSON.parse(httpRequest.responseText);
+    //                     if (callback) callback(data);
+    //                 }
+    //             }
+    //         };
+    //         httpRequest.open('GET', path);
+    //         httpRequest.send();
+    //     }
+    //
+    //     fetchJSONFile('https://randomuser.me/api/', (data) => {
+    //         let newUser = {};
+    //         newUser["key"] = Date.now();
+    //         newUser["name"] = `${data.results[0].name.first} ${data.results[0].name.last}`;
+    //         newUser["img"] = data.results[0].picture.thumbnail;
+    //         // if(this.firstUser === 0){
+    //         //     newUser["id"] = "you"
+    //         //     this.firstUser = 1;
+    //         // }
+    //         // else newUser["id"] = "online"
+    //         // this.socket.emit('new user', newUser);
+    //     });
+    // }
 
-        fetchJSONFile('https://randomuser.me/api/', (data) => {
-            let newUser = {};
-            newUser["key"] = Date.now();
-            newUser["name"] = `${data.results[0].name.first} ${data.results[0].name.last}`;
-            newUser["img"] = data.results[0].picture.thumbnail;
-            if(this.firstUser === 0){
-                newUser["id"] = "you"
-            }
-            else newUser["id"] = "online"
-            this.socket.emit('new user', newUser);
-        });
+    deleteUser(){
+        let newPersons = this.state.persons.slice();
+
     }
 
     render() {

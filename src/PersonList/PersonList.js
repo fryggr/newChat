@@ -5,7 +5,7 @@ import { Person } from "../Person/Person"
 
 export const PersonList = props => {
 
-    // console.log(props.persons);
+    console.log(props.persons);
     const onPersonView = props.onView;
     return (
         <Col s={4} className="grid-example">
