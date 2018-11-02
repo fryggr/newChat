@@ -1,9 +1,9 @@
 var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 
 let numberOfUsers = 0;
-let activeUsers = [];
 
 function getRandomUser(){
     function fetchJSONFile(path, callback) {
@@ -23,8 +23,10 @@ function getRandomUser(){
     fetchJSONFile('https://randomuser.me/api/', (data) => {
         let newUser = {};
         newUser["key"] = Date.now();
+        newUser["id"] = "online";
         newUser["name"] = `${data.results[0].name.first} ${data.results[0].name.last}`;
         newUser["img"] = data.results[0].picture.thumbnail;
+        console.log(newUser);
         return newUser;
     });
 }
@@ -34,11 +36,22 @@ app.get('/', function(req, res){
   res.sendFile(__dirname + '/public/index.html');
 });
 
+let activeUsers = [];
+
 io.on('connection', function(socket){
     numberOfUsers++;
-    console.log('a user connected', activeUsers);
+    console.log('a user connected');
+    socket.emit('message', {'message': 'hello world'});
     activeUsers.push(getRandomUser());
-    io.emit('user connected', activeUsers);
+    socket.emit('user connected', activeUsers);
+
+
+    // socket.on('user connected', function(activeUsers){
+    //     // activeUsers.push(getRandomUser());
+    //     getRandomUser();
+    //     console.log(activeUsers, numberOfUsers);
+    //     io.emit('user connected', activeUsers);
+    // });
 
     socket.on('disconnect', function(){
         numberOfUsers--;
@@ -50,10 +63,10 @@ io.on('connection', function(socket){
         io.emit('chat message', msg);
     });
 
-    socket.on('new user', function(user){
-        activeUsers.push(user);
-        io.emit('new user', user);
-    });
+    // socket.on('new user', function(user){
+    //     activeUsers.push(user);
+    //     io.emit('new user', user);
+    // });
 });
 
 http.listen(3000, function(){

@@ -77,22 +77,29 @@ class App extends Component {
            this.addMessage(msg);
          });
 
-        this.socket.on('user connected', (activeUsers) => {
-            this.setState({persons: activeUsers})
+         this.socket.on('message', function(data){
+            console.log(data.message);
+        });
+
+
+        this.socket.on('user connected', function(activeUsers) => {
+            console.log(activeUsers);
+            // this.setState({persons: activeUsers})
            // this.numberOfUsers = numberOfUsers;
             // this.getRandomUser();
+
          });
         //
-        // this.socket.on('user disconnected', (numberOfUsers) => {
-        //    this.numberOfUsers = numberOfUsers;
-        //    this.deleteUser();
-        //  });
+        this.socket.on('user disconnected', (numberOfUsers) => {
+           // this.numberOfUsers = numberOfUsers;
+           // this.deleteUser();
+         });
         //
         // this.socket.on('new user', (user) => {
         //    console.log(user);
-        //    let newPersons = this.state.persons.slice();
-        //    newPersons.push(user);
-        //    this.setState({persons: newPersons})
+        //    // let newPersons = this.state.persons.slice();
+        //    // newPersons.push(user);
+        //    // this.setState({persons: newPersons})
         //  });
 
         // Binding
@@ -102,7 +109,7 @@ class App extends Component {
         this.handleKeyPress = this.handleKeyPress.bind(this);
         this.sendMessage = this.sendMessage.bind(this);
         // this.getRandomUser = this.getRandomUser.bind(this);
-        this.deleteUser = this.deleteUser.bind(this);
+        // this.deleteUser = this.deleteUser.bind(this);
     }
 
     onPersonView(person) {
@@ -161,18 +168,18 @@ class App extends Component {
     //         //     this.firstUser = 1;
     //         // }
     //         // else newUser["id"] = "online"
-    //         // this.socket.emit('new user', newUser);
+    //         this.socket.emit('new user', newUser);
     //     });
     // }
-
-    deleteUser(){
-        let newPersons = this.state.persons.slice();
-
-    }
+    //
+    // deleteUser(){
+    //     let newPersons = this.state.persons.slice();
+    //
+    // }
 
     render() {
         return (
-            <div className="App container Chat">
+            <div className="App container Chat" onClick={()=>this.socket.emit('user connected')}>
                 <Row>
                     <PersonList persons={this.state.persons} onView={this.onPersonView}/>
                     <Col s={8} className="grid-example">
