@@ -73,27 +73,28 @@ class App extends Component {
 
         this.socket = io('http://localhost:3000');
 
-        this.socket.on('chat message', (msg) => {
-           this.addMessage(msg);
-         });
 
-         this.socket.on('message', function(data){
-            console.log(data.message);
-        });
+        // this.socket.on('chat message', (msg) => {
+        //    this.addMessage(msg);
+        //  });
+
+        //  this.socket.on('message', function(data){
+        //     console.log(data.message);
+        // });
 
 
-        this.socket.on('user connected', function(activeUsers) => {
+        this.socket.on('user connected', (activeUsers) => {
             console.log(activeUsers);
-            // this.setState({persons: activeUsers})
+            this.setState({persons: activeUsers})
            // this.numberOfUsers = numberOfUsers;
             // this.getRandomUser();
 
          });
         //
-        this.socket.on('user disconnected', (numberOfUsers) => {
+        // this.socket.on('user disconnected', (numberOfUsers) => {
            // this.numberOfUsers = numberOfUsers;
            // this.deleteUser();
-         });
+         // });
         //
         // this.socket.on('new user', (user) => {
         //    console.log(user);
@@ -139,8 +140,8 @@ class App extends Component {
     }
 
     sendMessage(){
-        if(this.chatInput.current.value !== '')
-            this.socket.emit('chat message', this.chatInput.current.value);
+        // if(this.chatInput.current.value !== '')
+            // this.socket.emit('chat message', this.chatInput.current.value);
     }
 
     // getRandomUser(){
