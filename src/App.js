@@ -71,7 +71,8 @@ class App extends Component {
         this.openChat = 0;
         this.firstUser = 0;
 
-        this.socket = io('37.1.218.55:3000');
+        // this.socket = io('37.1.218.55:3000');
+        this.socket = io('http://localhost:3000');
 
 
         this.socket.on('chat message', (msg) => {
@@ -132,46 +133,19 @@ class App extends Component {
             this.socket.emit('chat message', this.chatInput.current.value);
     }
 
-    // getRandomUser(){
-    //     function fetchJSONFile(path, callback) {
-    //         var httpRequest = new XMLHttpRequest();
-    //         httpRequest.onreadystatechange = function() {
-    //             if (httpRequest.readyState === 4) {
-    //                 if (httpRequest.status === 200) {
-    //                     var data = JSON.parse(httpRequest.responseText);
-    //                     if (callback) callback(data);
-    //                 }
-    //             }
-    //         };
-    //         httpRequest.open('GET', path);
-    //         httpRequest.send();
-    //     }
-    //
-    //     fetchJSONFile('https://randomuser.me/api/', (data) => {
-    //         let newUser = {};
-    //         newUser["key"] = Date.now();
-    //         newUser["name"] = `${data.results[0].name.first} ${data.results[0].name.last}`;
-    //         newUser["img"] = data.results[0].picture.thumbnail;
-    //         // if(this.firstUser === 0){
-    //         //     newUser["id"] = "you"
-    //         //     this.firstUser = 1;
-    //         // }
-    //         // else newUser["id"] = "online"
-    //         this.socket.emit('new user', newUser);
-    //     });
-    // }
-    //
-    // deleteUser(){
-    //     let newPersons = this.state.persons.slice();
-    //
-    // }
 
     render() {
         return (
-            <div className="App container Chat" onClick={()=>this.socket.emit('user connected')}>
+            [
+            <nav className="light-blue lighten-1" role="navigation">
+                <div className="nav-wrapper container">
+                    <a id="logo-container" href="#" className="brand-logo">MyChat</a>
+                </div>
+            </nav>,
+            <div className="App container Chat" >
                 <Row>
                     <PersonList persons={this.state.persons} onView={this.onPersonView}/>
-                    <Col s={8} className="grid-example">
+                    <Col s={8} m={8} xl={6} l={8} className="grid-example Chat__body-wrap">
                         <div className="Chat__body row" >
                             {
                                 /*this.openChat === 0
@@ -207,7 +181,15 @@ class App extends Component {
                     </Col>
                 </Row>
 
-            </div>
+            </div>,
+            <footer className="page-footer orange">
+                <div className="footer-copyright">
+                  <div className="container">
+                  Made by <a className="orange-text text-lighten-3" href="#">Daria Smirnova</a>
+                  </div>
+                </div>
+              </footer>
+        ]
         );
     }
 }

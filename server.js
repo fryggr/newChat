@@ -70,23 +70,23 @@ http.listen(3000, function(){
   console.log('listening on *:3000');
 });
 
-var mysql      = require('mysql');
-var connection = mysql.createConnection({
-  host     : '37.1.218.55',
-  user     : 'ecampus',
-  password : 'G8c4M0n1',
-  database: 'ecampus_test'
-});
-
-connection.connect(function(err) {
-  if (err) throw err
-  console.log('You are now connected...')
-
-  connection.query('SELECT * FROM users where id=1', function(err, results) {
-    if (err) throw err
-    console.log(results[0])
-  })
-})
+// var mysql      = require('mysql');
+// var connection = mysql.createConnection({
+//   host     : '37.1.218.55',
+//   user     : 'ecampus',
+//   password : 'G8c4M0n1',
+//   database: 'ecampus_test'
+// });
+//
+// connection.connect(function(err) {
+//   if (err) throw err
+//   console.log('You are now connected...')
+//
+//   connection.query('SELECT * FROM users where id=1', function(err, results) {
+//     if (err) throw err
+//     console.log(results[0])
+//   })
+// })
 
 
 // connection.end();

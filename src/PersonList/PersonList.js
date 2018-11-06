@@ -8,7 +8,7 @@ export const PersonList = props => {
     console.log(props.persons);
     const onPersonView = props.onView;
     return (
-        <Col s={4} className="grid-example">
+        <Col s={2} m={2} xl={3} l={4} className="grid-example Person__list">
             <Collection>
             {
                 props.persons.map(el =>
