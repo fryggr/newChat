@@ -1,11 +1,11 @@
 var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 var request = require('request');
 var rp = require('request-promise');
 
 let numberOfUsers = 0;
+let userId = '';
 
 function getRandomUser(url){
     let newUser = {};
@@ -13,58 +13,21 @@ function getRandomUser(url){
     return rp(url).then(body => {
         // make the count be the resolved value of the promise
         let responseJSON = JSON.parse(body);
-        let data = JSON.stringify(responseJSON.results[0], null, "\t");
-        newUser["key"] = Date.now();
+        newUser["key"] = userId;
         newUser["id"] = "online";
         newUser["name"] = `${responseJSON.results[0].name.first} ${responseJSON.results[0].name.last}`;
         newUser["img"] = responseJSON.results[0].picture.thumbnail;
         return newUser;
     });
 
-    // request('https://randomuser.me/api/',{ json: true }, function (error, response, body) {
-    //
-    //     // let data = JSON.parse(body.result);
-    //     // console.log(body.results[0].name.first);
-    //     newUser["key"] = Date.now();
-    //     newUser["id"] = "online";
-    //     newUser["name"] = `${body.results[0].name.first} ${body.results[0].name.last}`;
-    //     newUser["img"] = body.results[0].picture.thumbnail;
-    //
-    // });
-    // return newUser;
+}
 
-
-    // function fetchJSONFile(path, callback) {
-        // var httpRequest = new XMLHttpRequest();
-        // httpRequest.open('GET', 'https://randomuser.me/api/');
-        // httpRequest.send();
-        // httpRequest.onreadystatechange = function() {
-        //     if (httpRequest.readyState === 4) {
-        //         if (httpRequest.status === 200) {
-        //             var data = JSON.parse(httpRequest.responseText);
-        //             let newUser = {};
-        //             // if (callback) callback(data);
-        //             newUser["key"] = Date.now();
-        //             newUser["id"] = "online";
-        //             newUser["name"] = `${data.results[0].name.first} ${data.results[0].name.last}`;
-        //             newUser["img"] = data.results[0].picture.thumbnail;
-        //             return newUser;
-        //         }
-        //     }
-        // };
-
-
-    // }
-
-    // fetchJSONFile('https://randomuser.me/api/', (data) => {
-    //     // let newUser = {};
-    //     this.newUser["key"] = Date.now();
-    //     this.newUser["id"] = "online";
-    //     this.newUser["name"] = `${data.results[0].name.first} ${data.results[0].name.last}`;
-    //     this.newUser["img"] = data.results[0].picture.thumbnail;
-    //     return this.newUser;
-    // })
-
+function deleteUser(id){
+    activeUsers.forEach((item, index) => {
+        if(id === item.key){
+            activeUsers.splice(index, 1)
+        }
+    })
 }
 
 
@@ -76,51 +39,54 @@ let activeUsers = [];
 
 
 io.on('connection', function(socket){
+
+    userId = socket.id;
     getRandomUser('https://randomuser.me/api/').then(count => {
         // use the count result in here
         console.log(count);
         activeUsers.push(count);
-        io.emit('user connected', activeUsers);
+        io.emit('user connected', activeUsers, numberOfUsers);
     }).catch(err => {
         console.log('Got error from getNumResults ', err);
     });
     numberOfUsers++;
     console.log('a user connected');
-    // socket.emit('message', {'message': 'hello world'});
-    // console.log("randomUser: ", randomUser);
-    // console.log("numberOfUsers: ", numberOfUsers);
-    // activeUsers.push(randomUser);
-
-
-    // if(numberOfUsers === 0) io.emit('user connected', activeUsers);
-
-    console.log('activeUsers: ', activeUsers);
-
-
-    // socket.on('user connected', function(activeUsers){
-    //     // activeUsers.push(getRandomUser());
-    //     getRandomUser();
-    //     console.log(activeUsers, numberOfUsers);
-    //     io.emit('user connected', activeUsers);
-    // });
+    console.log("numberOfUsers: ", numberOfUsers);
 
     socket.on('disconnect', function(){
-        // numberOfUsers--;
-        console.log('user disconnected', numberOfUsers);
-        console.log('activeUsers: ', activeUsers);
-        // io.emit('user disconnected', numberOfUsers);
+        numberOfUsers--;
+        deleteUser(socket.id);
+        console.log('user disconnected', numberOfUsers, socket.id);
+        io.emit('user disconnected', activeUsers, numberOfUsers);
     });
 
-    // socket.on('chat message', function(msg){
-    //     io.emit('chat message', msg);
-    // });
+    socket.on('chat message', function(msg){
+        io.emit('chat message', msg);
+    });
 
-    // socket.on('new user', function(user){
-    //     activeUsers.push(user);
-    //     io.emit('new user', user);
-    // });
 });
 
 http.listen(3000, function(){
   console.log('listening on *:3000');
 });
+
+var mysql      = require('mysql');
+var connection = mysql.createConnection({
+  host     : '37.1.218.55',
+  user     : 'ecampus',
+  password : 'G8c4M0n1',
+  database: 'ecampus_test'
+});
+
+connection.connect(function(err) {
+  if (err) throw err
+  console.log('You are now connected...')
+
+  connection.query('SELECT * FROM users where id=1', function(err, results) {
+    if (err) throw err
+    console.log(results[0])
+  })
+})
+
+
+// connection.end();

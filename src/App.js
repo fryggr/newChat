@@ -71,37 +71,25 @@ class App extends Component {
         this.openChat = 0;
         this.firstUser = 0;
 
-        this.socket = io('http://localhost:3000');
+        this.socket = io('37.1.218.55:3000');
 
 
-        // this.socket.on('chat message', (msg) => {
-        //    this.addMessage(msg);
-        //  });
-
-        //  this.socket.on('message', function(data){
-        //     console.log(data.message);
-        // });
+        this.socket.on('chat message', (msg) => {
+           this.addMessage(msg);
+         });
 
 
-        this.socket.on('user connected', (activeUsers) => {
-            console.log(activeUsers);
+        this.socket.on('user connected', (activeUsers, numberOfUsers) => {
             this.setState({persons: activeUsers})
-           // this.numberOfUsers = numberOfUsers;
-            // this.getRandomUser();
+           this.numberOfUsers = numberOfUsers;
 
          });
-        //
-        // this.socket.on('user disconnected', (numberOfUsers) => {
-           // this.numberOfUsers = numberOfUsers;
-           // this.deleteUser();
-         // });
-        //
-        // this.socket.on('new user', (user) => {
-        //    console.log(user);
-        //    // let newPersons = this.state.persons.slice();
-        //    // newPersons.push(user);
-        //    // this.setState({persons: newPersons})
-        //  });
+
+        this.socket.on('user disconnected', (activeUsers, numberOfUsers) => {
+           this.numberOfUsers = numberOfUsers;
+           this.setState({persons: activeUsers})
+         });
+
 
         // Binding
 
@@ -128,7 +116,7 @@ class App extends Component {
         this.setState({ messages: messages });
         this.chatInput.current.value = '';
         const chatMessages = document.querySelector('.Chat__messages');
-        chatMessages.scrollTo(0, chatMessages.getBoundingClientRect().bottom);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
 
         // document.querySelectorAll('[for="first_name"]')[0].classList.remove('active');
     }
@@ -140,8 +128,8 @@ class App extends Component {
     }
 
     sendMessage(){
-        // if(this.chatInput.current.value !== '')
-            // this.socket.emit('chat message', this.chatInput.current.value);
+        if(this.chatInput.current.value !== '')
+            this.socket.emit('chat message', this.chatInput.current.value);
     }
 
     // getRandomUser(){
@@ -186,7 +174,7 @@ class App extends Component {
                     <Col s={8} className="grid-example">
                         <div className="Chat__body row" >
                             {
-                                this.openChat === 0
+                                /*this.openChat === 0
                                 ?
                                 <div className="Chat__body-wrapper Chat__body-wrapper_preview">
                                     <Row className='center'>
@@ -199,9 +187,10 @@ class App extends Component {
                                         </Col>
                                     </Row>
                                 </div>
-                                :
+                                :*/
+                            }
                                 <div className="Chat__body-wrapper">
-                                    <ChatHeader onPersonView={this.state.activePerson} />
+                                    {/*<ChatHeader onPersonView={this.state.activePerson} />*/}
                                     <ChatBody messages={this.state.messages} />
                                     <Col s={12} className="Chat__input">
                                         <Col s={11} className="input-field">
@@ -213,7 +202,7 @@ class App extends Component {
                                         </i>
                                     </Col>
                                 </div>
-                            }
+
                         </div>
                     </Col>
                 </Row>
