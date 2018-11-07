@@ -45,22 +45,25 @@ io.on('connection', function(socket){
         // use the count result in here
         console.log(count);
         activeUsers.push(count);
-        io.emit('user connected', activeUsers, numberOfUsers);
+        io.emit('user connected', activeUsers, numberOfUsers, userId);
     }).catch(err => {
-        console.log('Got error from getNumResults ', err);
+        console.log('Got error ', err);
     });
     numberOfUsers++;
+
     console.log('a user connected');
     console.log("numberOfUsers: ", numberOfUsers);
 
     socket.on('disconnect', function(){
         numberOfUsers--;
         deleteUser(socket.id);
-        console.log('user disconnected', numberOfUsers, socket.id);
         io.emit('user disconnected', activeUsers, numberOfUsers);
+
+        console.log('user disconnected', numberOfUsers, socket.id);
     });
 
     socket.on('chat message', function(msg){
+        console.log(msg);
         io.emit('chat message', msg);
     });
 

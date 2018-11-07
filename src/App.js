@@ -68,28 +68,36 @@ class App extends Component {
         this.chatBodyPrev = React.createRef();
         this.chatBody = React.createRef();
         this.chatInput = React.createRef();
-        this.openChat = 0;
+        this.myConnect = 0;
         this.firstUser = 0;
+        // this.userId = Date.now();
 
         // this.socket = io('37.1.218.55:3000');
         this.socket = io('http://localhost:3000');
 
 
-        this.socket.on('chat message', (msg) => {
-           this.addMessage(msg);
+        this.socket.on('chat message', (messages) => {
+           this.setState({ messages: messages });
          });
 
 
-        this.socket.on('user connected', (activeUsers, numberOfUsers) => {
+        this.socket.on('user connected', (activeUsers, numberOfUsers, userId) => {
+            this.myConnect++;
             this.setState({persons: activeUsers})
            this.numberOfUsers = numberOfUsers;
-
+           console.log('user connected ',this.myConnect);
+           if(this.myConnect === 1){
+               this.userId = userId;
+               console.log('user connected ', this.userId);
+           }
          });
 
         this.socket.on('user disconnected', (activeUsers, numberOfUsers) => {
            this.numberOfUsers = numberOfUsers;
            this.setState({persons: activeUsers})
          });
+
+         // this.socket.emit('user connected', this.state.persons, this.numberOfUsers, this.userId);
 
 
         // Binding
@@ -111,10 +119,16 @@ class App extends Component {
     }
 
     addMessage(message) {
-        let newMessage = {message: message}
+        let newMessage = {
+            message: message,
+            id: this.userId
+        }
         let messages = this.state.messages.slice();
         messages.push(newMessage);
-        this.setState({ messages: messages });
+        this.socket.emit('chat message', messages);
+        // this.setState({ messages: messages });
+        console.log("chat message ", messages);
+        console.log("chat message ", this.userId);
         this.chatInput.current.value = '';
         const chatMessages = document.querySelector('.Chat__messages');
         chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -130,7 +144,8 @@ class App extends Component {
 
     sendMessage(){
         if(this.chatInput.current.value !== '')
-            this.socket.emit('chat message', this.chatInput.current.value);
+            this.addMessage(this.chatInput.current.value);
+
     }
 
 
@@ -165,13 +180,13 @@ class App extends Component {
                             }
                                 <div className="Chat__body-wrapper">
                                     {/*<ChatHeader onPersonView={this.state.activePerson} />*/}
-                                    <ChatBody messages={this.state.messages} />
+                                    <ChatBody messages={this.state.messages} persons={this.state.persons} userId={this.userId}/>
                                     <Col s={12} className="Chat__input">
                                         <Col s={11} className="input-field">
                                             <input s={11} id="first_name" type="text" ref={this.chatInput} onKeyPress={this.handleKeyPress}/>
                                             <label htmlFor="first_name">Type message...</label>
                                         </Col>
-                                        <i className="material-icons Chat__icon-send" onClick={this.sendMessage} >
+                                        <i className="small material-icons Chat__icon-send" onClick={this.sendMessage} >
                                             send
                                         </i>
                                     </Col>

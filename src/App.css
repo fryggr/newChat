@@ -1,6 +1,5 @@
 .App {
     text-align: center;
-    padding-top: 30px;
     height: calc(100vh - 114px);
 }
 
@@ -34,17 +33,16 @@
 }
 
 .Chat__body {
-    /* margin: .5rem 0 1rem 0; */
     border: 1px solid #e0e0e0;
+    border-top: 0;
+    border-bottom: 0;
     border-radius: 2px;
     overflow: hidden;
     position: relative;
-    /* min-height: 500px; */
-    height: calc(100% - 50px);
+    height:100%;
 }
 
 .Chat__body-wrapper {
-    /* min-height: 500px; */
 }
 
 .Chat__body-wrapper.hidden {
@@ -71,6 +69,7 @@
 .Chat__icon-send {
     cursor: pointer;
     margin-top: 30px;
+    color: #29b6f6;
 }
 
 .Chat__input {
@@ -141,16 +140,26 @@
 
 .Chat__message {
     text-align: left;
+    padding-top: 10px;
 }
 
 .Chat__messages {
     height: 410px;
     overflow-y: auto;
+    padding-top: 30px;
+}
+
+.Chat__message-user-name{
+    color: #26a69a;
 }
 
 .Chat__list__badge {
     position: absolute;
     right: 5px;
+}
+
+.Chat__message-wrap{
+    padding: 10px 0;
 }
 
 .Person__list{
@@ -159,6 +168,7 @@
     border: 0;
     padding: 0 !important;
     max-width: 300px;
+    padding-top: 30px!important;
 }
 
 .Person__list > ul{
@@ -169,6 +179,11 @@
 .Chat__body-wrap{
     padding: 0;
     max-width: 600px;
+}
+
+.Chat__message-user-info{
+    display: flex;
+    align-items: center;
 }
 
 footer.page-footer {
