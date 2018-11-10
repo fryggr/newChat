@@ -76,8 +76,9 @@ class App extends Component {
         this.socket = io('http://localhost:3000');
 
 
-        this.socket.on('chat message', (messages) => {
-           this.setState({ messages: messages });
+        this.socket.on('chat message', (message, userId) => {
+            this.addMessage(message, userId);
+           // this.setState({ messages: messages });
          });
 
 
@@ -118,18 +119,19 @@ class App extends Component {
         this.setState({ activePerson: person })
     }
 
-    addMessage(message) {
+    addMessage(message, userId) {
         let newMessage = {
             message: message,
-            id: this.userId
+            id: userId
         }
         let messages = this.state.messages.slice();
         messages.push(newMessage);
-        this.socket.emit('chat message', messages);
-        // this.setState({ messages: messages });
+        // this.socket.emit('chat message', messages);
+        this.setState({ messages: messages });
         console.log("chat message ", messages);
-        console.log("chat message ", this.userId);
-        this.chatInput.current.value = '';
+        console.log("chat message ", userId);
+        userId === this.userId ? this.chatInput.current.value = '' : "";
+        // this.chatInput.current.value = '';
         const chatMessages = document.querySelector('.Chat__messages');
         chatMessages.scrollTop = chatMessages.scrollHeight;
 
@@ -144,7 +146,8 @@ class App extends Component {
 
     sendMessage(){
         if(this.chatInput.current.value !== '')
-            this.addMessage(this.chatInput.current.value);
+            this.socket.emit('chat message', this.chatInput.current.value, this.userId);
+            // this.addMessage(this.chatInput.current.value);
 
     }
 

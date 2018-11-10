@@ -62,9 +62,9 @@ io.on('connection', function(socket){
         console.log('user disconnected', numberOfUsers, socket.id);
     });
 
-    socket.on('chat message', function(msg){
+    socket.on('chat message', function(msg, userId){
         console.log(msg);
-        io.emit('chat message', msg);
+        io.emit('chat message', msg, userId);
     });
 
 });

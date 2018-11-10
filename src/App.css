@@ -43,6 +43,7 @@
 }
 
 .Chat__body-wrapper {
+    height: 100%
 }
 
 .Chat__body-wrapper.hidden {
@@ -144,7 +145,7 @@
 }
 
 .Chat__messages {
-    height: 410px;
+    height: calc(100% - 90px);
     overflow-y: auto;
     padding-top: 30px;
 }
