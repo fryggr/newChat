@@ -10,6 +10,8 @@ export const ChatBody = props => {
                     return(
                         <ChatMessage
                             message={item.message}
+                            name={item.name}
+                            img={item.img}
                             idmessage={item.id}
                             key={index}
                             persons={props.persons}

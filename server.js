@@ -6,6 +6,8 @@ var rp = require('request-promise');
 
 let numberOfUsers = 0;
 let userId = '';
+let userName = '';
+let userImg = '';
 
 function getRandomUser(url){
     let newUser = {};
@@ -17,6 +19,8 @@ function getRandomUser(url){
         newUser["id"] = "online";
         newUser["name"] = `${responseJSON.results[0].name.first} ${responseJSON.results[0].name.last}`;
         newUser["img"] = responseJSON.results[0].picture.thumbnail;
+        userName = `${responseJSON.results[0].name.first} ${responseJSON.results[0].name.last}`;
+        userImg = responseJSON.results[0].picture.thumbnail;
         return newUser;
     });
 
@@ -45,13 +49,13 @@ io.on('connection', function(socket){
         // use the count result in here
         console.log(count);
         activeUsers.push(count);
-        io.emit('user connected', activeUsers, numberOfUsers, userId);
+        io.emit('user connected', activeUsers, numberOfUsers, userId, userName, userImg);
     }).catch(err => {
         console.log('Got error ', err);
     });
     numberOfUsers++;
 
-    console.log('a user connected');
+    console.log('a user connected', userId, userName, userImg);
     console.log("numberOfUsers: ", numberOfUsers);
 
     socket.on('disconnect', function(){
@@ -62,9 +66,9 @@ io.on('connection', function(socket){
         console.log('user disconnected', numberOfUsers, socket.id);
     });
 
-    socket.on('chat message', function(msg, userId){
+    socket.on('chat message', function(msg, userId, name, img){
         console.log(msg);
-        io.emit('chat message', msg, userId);
+        io.emit('chat message', msg, userId, name, img);
     });
 
 });

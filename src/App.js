@@ -76,19 +76,21 @@ class App extends Component {
         this.socket = io('http://localhost:3000');
 
 
-        this.socket.on('chat message', (message, userId) => {
-            this.addMessage(message, userId);
+        this.socket.on('chat message', (message, userId, name, img) => {
+            this.addMessage(message, userId, name, img);
            // this.setState({ messages: messages });
          });
 
 
-        this.socket.on('user connected', (activeUsers, numberOfUsers, userId) => {
+        this.socket.on('user connected', (activeUsers, numberOfUsers, userId, name, img) => {
             this.myConnect++;
             this.setState({persons: activeUsers})
            this.numberOfUsers = numberOfUsers;
            console.log('user connected ',this.myConnect);
            if(this.myConnect === 1){
                this.userId = userId;
+               this.name = name;
+               this.img = img;
                console.log('user connected ', this.userId);
            }
          });
@@ -119,17 +121,19 @@ class App extends Component {
         this.setState({ activePerson: person })
     }
 
-    addMessage(message, userId) {
+    addMessage(message, userId, name, img) {
         let newMessage = {
             message: message,
-            id: userId
+            id: userId,
+            name: name,
+            img: img
         }
         let messages = this.state.messages.slice();
         messages.push(newMessage);
         // this.socket.emit('chat message', messages);
         this.setState({ messages: messages });
         console.log("chat message ", messages);
-        console.log("chat message ", userId);
+        // console.log("chat message ", userId);
         userId === this.userId ? this.chatInput.current.value = '' : "";
         // this.chatInput.current.value = '';
         const chatMessages = document.querySelector('.Chat__messages');
@@ -146,7 +150,7 @@ class App extends Component {
 
     sendMessage(){
         if(this.chatInput.current.value !== '')
-            this.socket.emit('chat message', this.chatInput.current.value, this.userId);
+            this.socket.emit('chat message', this.chatInput.current.value, this.userId, this.name, this.img);
             // this.addMessage(this.chatInput.current.value);
 
     }
