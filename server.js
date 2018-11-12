@@ -68,6 +68,7 @@ io.on('connection', function(socket){
 
     socket.on('chat message', function(msg, userId, name, img){
         console.log(msg);
+        // io.to(people[data.reciever]).emit('chat message', data.msg);
         io.emit('chat message', msg, userId, name, img);
     });
 

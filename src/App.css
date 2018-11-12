@@ -187,6 +187,22 @@
     align-items: center;
 }
 
+.Chat__list-roomicon{
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    margin-right: 10px;
+    background-color: #26a69a;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.collection{
+    border-right: 0;
+}
+
 footer.page-footer {
     padding-top: 0;
 }

@@ -61,7 +61,14 @@ class App extends Component {
 
         this.state = {
             persons: [],
-            activePerson: [],
+            activePerson:
+                {
+                    id: "",
+                    img: "http://placehold.it/50x50/26a69a/ffffff.jpg&text=G",
+                    key: "",
+                    name: "General"
+                }
+            ,
             messages: []
         };
 
@@ -84,7 +91,6 @@ class App extends Component {
 
         this.socket.on('user connected', (activeUsers, numberOfUsers, userId, name, img) => {
             this.myConnect++;
-            this.setState({persons: activeUsers})
            this.numberOfUsers = numberOfUsers;
            console.log('user connected ',this.myConnect);
            if(this.myConnect === 1){
@@ -93,6 +99,7 @@ class App extends Component {
                this.img = img;
                console.log('user connected ', this.userId);
            }
+           this.setState({persons: activeUsers})
          });
 
         this.socket.on('user disconnected', (activeUsers, numberOfUsers) => {
@@ -109,8 +116,6 @@ class App extends Component {
         this.addMessage = this.addMessage.bind(this);
         this.handleKeyPress = this.handleKeyPress.bind(this);
         this.sendMessage = this.sendMessage.bind(this);
-        // this.getRandomUser = this.getRandomUser.bind(this);
-        // this.deleteUser = this.deleteUser.bind(this);
     }
 
     onPersonView(person) {
@@ -151,7 +156,6 @@ class App extends Component {
     sendMessage(){
         if(this.chatInput.current.value !== '')
             this.socket.emit('chat message', this.chatInput.current.value, this.userId, this.name, this.img);
-            // this.addMessage(this.chatInput.current.value);
 
     }
 
@@ -166,7 +170,7 @@ class App extends Component {
             </nav>,
             <div className="App container Chat" >
                 <Row>
-                    <PersonList persons={this.state.persons} onView={this.onPersonView}/>
+                    <PersonList persons={this.state.persons} onView={this.onPersonView} userId={this.userId} roomId="General"/>
                     <Col s={8} m={8} xl={6} l={8} className="grid-example Chat__body-wrap">
                         <div className="Chat__body row" >
                             {
@@ -186,8 +190,8 @@ class App extends Component {
                                 :*/
                             }
                                 <div className="Chat__body-wrapper">
-                                    {/*<ChatHeader onPersonView={this.state.activePerson} />*/}
-                                    <ChatBody messages={this.state.messages} persons={this.state.persons} userId={this.userId}/>
+                                    <ChatHeader onPersonView={this.state.activePerson} />
+                                    <ChatBody messages={this.state.messages} persons={this.state.persons} />
                                     <Col s={12} className="Chat__input">
                                         <Col s={11} className="input-field">
                                             <input s={11} id="first_name" type="text" ref={this.chatInput} onKeyPress={this.handleKeyPress}/>
