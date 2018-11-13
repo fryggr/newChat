@@ -69,15 +69,14 @@ class App extends Component {
                     name: "General"
                 }
             ,
-            messages: []
+            messages: [],
+            openChat: 0
         };
 
         this.chatBodyPrev = React.createRef();
         this.chatBody = React.createRef();
         this.chatInput = React.createRef();
         this.myConnect = 0;
-        this.firstUser = 0;
-        // this.userId = Date.now();
 
         // this.socket = io('37.1.218.55:3000');
         this.socket = io('http://localhost:3000');
@@ -92,7 +91,6 @@ class App extends Component {
         this.socket.on('user connected', (activeUsers, numberOfUsers, userId, name, img) => {
             this.myConnect++;
            this.numberOfUsers = numberOfUsers;
-           console.log('user connected ',this.myConnect);
            if(this.myConnect === 1){
                this.userId = userId;
                this.name = name;
@@ -107,9 +105,6 @@ class App extends Component {
            this.setState({persons: activeUsers})
          });
 
-         // this.socket.emit('user connected', this.state.persons, this.numberOfUsers, this.userId);
-
-
         // Binding
 
         this.onPersonView = this.onPersonView.bind(this);
@@ -119,7 +114,7 @@ class App extends Component {
     }
 
     onPersonView(person) {
-        this.openChat = 1;
+        this.state.openChat = 1;
         console.log(person);
         // this.chatBody.current.classList.remove("hidden");
         // this.chatBodyPrev.current.classList.add("hidden");
@@ -135,12 +130,9 @@ class App extends Component {
         }
         let messages = this.state.messages.slice();
         messages.push(newMessage);
-        // this.socket.emit('chat message', messages);
         this.setState({ messages: messages });
         console.log("chat message ", messages);
-        // console.log("chat message ", userId);
         userId === this.userId ? this.chatInput.current.value = '' : "";
-        // this.chatInput.current.value = '';
         const chatMessages = document.querySelector('.Chat__messages');
         chatMessages.scrollTop = chatMessages.scrollHeight;
 
@@ -173,22 +165,18 @@ class App extends Component {
                     <PersonList persons={this.state.persons} onView={this.onPersonView} userId={this.userId} roomId="General"/>
                     <Col s={8} m={8} xl={6} l={8} className="grid-example Chat__body-wrap">
                         <div className="Chat__body row" >
-                            {
-                                /*this.openChat === 0
-                                ?
+                            {this.state.openChat === 0 ?
                                 <div className="Chat__body-wrapper Chat__body-wrapper_preview">
                                     <Row className='center'>
                                         <Col s={12}>
                                           <Icon className="grey" large>forum</Icon>
                                           <p className="Chat__text-prev">
                                               {
-                                                  this.numberOfUsers < 2 || this.numberOfUsers === undefined ? "Sorry, there are currently no users online." : "Choose the chat!"
+                                                  this.numberOfUsers < 2 || this.numberOfUsers === undefined ? "Sorry, there are currently no users online." : "Choose the chat to start messaging."
                                               }</p>
                                         </Col>
                                     </Row>
-                                </div>
-                                :*/
-                            }
+                                </div> :
                                 <div className="Chat__body-wrapper">
                                     <ChatHeader onPersonView={this.state.activePerson} />
                                     <ChatBody messages={this.state.messages} persons={this.state.persons} />
@@ -202,7 +190,7 @@ class App extends Component {
                                         </i>
                                     </Col>
                                 </div>
-
+                            }
                         </div>
                     </Col>
                 </Row>
