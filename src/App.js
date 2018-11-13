@@ -83,7 +83,7 @@ class App extends Component {
         this.socket = io('http://localhost:3000');
 
 
-        this.socket.on('chat message', (message, userId, name, img) => {
+        this.socket.on('chat message', (message, userId, name, img, receiverId) => {
             this.addMessage(message, userId, name, img);
            // this.setState({ messages: messages });
          });
@@ -155,7 +155,7 @@ class App extends Component {
 
     sendMessage(){
         if(this.chatInput.current.value !== '')
-            this.socket.emit('chat message', this.chatInput.current.value, this.userId, this.name, this.img);
+            this.socket.emit('chat message', this.chatInput.current.value, this.userId, this.name, this.img, this.state.activePerson.key);
 
     }
 

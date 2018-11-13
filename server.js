@@ -66,10 +66,10 @@ io.on('connection', function(socket){
         console.log('user disconnected', numberOfUsers, socket.id);
     });
 
-    socket.on('chat message', function(msg, userId, name, img){
-        console.log(msg);
-        // io.to(people[data.reciever]).emit('chat message', data.msg);
-        io.emit('chat message', msg, userId, name, img);
+    socket.on('chat message', function(msg, userId, name, img, receiverId){
+        console.log(msg, receiverId);
+        io.to(receiverId).emit('chat message', msg, userId, name, img);
+        // io.emit('chat message', msg, userId, name, img);
     });
 
 });
