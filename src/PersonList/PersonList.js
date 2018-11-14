@@ -20,12 +20,12 @@ export const PersonList = props => {
                     </CollectionItem >,
                     props.persons.map(el =>
                         <Person
-                            key={el.key}
+                            key={el.roomId}
                             id={
-                                el.key === props.userId ? "you" : "online"
+                                el.roomId === props.userId ? "you" : "online"
                             }
-                            name={el.name}
-                            image={el.img}
+                            name={el.roomName}
+                            image={el.roomImg}
                             onView={onPersonView.bind(null, el)}
                         />
                     )

@@ -15,10 +15,10 @@ function getRandomUser(url){
     return rp(url).then(body => {
         // make the count be the resolved value of the promise
         let responseJSON = JSON.parse(body);
-        newUser["key"] = userId;
+        newUser["roomId"] = userId;
         newUser["id"] = "online";
-        newUser["name"] = `${responseJSON.results[0].name.first} ${responseJSON.results[0].name.last}`;
-        newUser["img"] = responseJSON.results[0].picture.thumbnail;
+        newUser["roomName"] = `${responseJSON.results[0].name.first} ${responseJSON.results[0].name.last}`;
+        newUser["roomImg"] = responseJSON.results[0].picture.thumbnail;
         userName = `${responseJSON.results[0].name.first} ${responseJSON.results[0].name.last}`;
         userImg = responseJSON.results[0].picture.thumbnail;
         return newUser;
@@ -66,9 +66,10 @@ io.on('connection', function(socket){
         console.log('user disconnected', numberOfUsers, socket.id);
     });
 
-    socket.on('chat message', function(msg, userId, name, img, receiverId){
+    socket.on('chat message', function(msg, userId, name, img, receiverId, receiverImg, receiverName){
         console.log(msg, receiverId);
-        io.to(receiverId).emit('chat message', msg, userId, name, img);
+        io.to(receiverId).emit('chat message', msg, userId, name, img, receiverId, receiverImg, receiverName);
+        io.to(userId).emit('chat message', msg, userId, name, img, receiverId, receiverImg, receiverName);
         // io.emit('chat message', msg, userId, name, img);
     });
 

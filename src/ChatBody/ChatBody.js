@@ -7,16 +7,14 @@ export const ChatBody = props => {
         <Col s={12} className="Chat__messages">
             {
                 props.messages.map((item,index) => {
-                    return(
+                    (item.roomId === props.activeRoom.roomId) ?
                         <ChatMessage
-                            message={item.message}
-                            name={item.name}
-                            img={item.img}
-                            idmessage={item.id}
+                            message={item.messages.userMessage}
+                            name={item.messages.userName}
+                            img={item.messages.userImg}
                             key={index}
-                            persons={props.persons}
                         />
-                    )
+                    : ""
                 })
             }
         </Col>

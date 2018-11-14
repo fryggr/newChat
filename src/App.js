@@ -11,49 +11,6 @@ import { ChatBody } from "./ChatBody/ChatBody.js";
 
 import io from 'socket.io-client';
 
-// import anton from "./Person/img/anton.jpg";
-// import svidetel from "./Person/img/ava.png";
-// import kot from "./Person/img/kot.jpg";
-// import poehavshiy from "./Person/img/poehavshiy.jpg";
-// import removekebab from "./Person/img/remove-kebab.png";
-
-// let PERSONS = [
-//     {
-//         "id": 0,
-//         "name": "Svidetel",
-//         "messages":[],
-//         "img": svidetel
-//     },
-//     {
-//         "id": 1,
-//         "name": "Anton Uralskiy",
-//         "messages":[],
-//         "img": anton
-//     },
-//     {
-//         "id": 2,
-//         "name": "Kot",
-//         "messages":[],
-//         "img": kot
-//     },
-//     {
-//         "id": 3,
-//         "name": "Remove Kebab",
-//         "messages":[],
-//         "img": removekebab
-//     },
-//     {
-//         "id": 4,
-//         "name": "Poehavshiy",
-//         "messages":[
-//             {
-//                 message: 'olololo'
-//             }
-//         ],
-//         "img": poehavshiy
-//     }
-// ];
-
 class App extends Component {
 
     constructor(props){
@@ -61,16 +18,34 @@ class App extends Component {
 
         this.state = {
             persons: [],
-            activePerson:
+            activeRoom:
                 {
-                    id: "",
-                    img: "http://placehold.it/50x50/26a69a/ffffff.jpg&text=G",
-                    key: "",
-                    name: "General"
+                    roomId: "",
+                    roomImg: "http://placehold.it/50x50/26a69a/ffffff.jpg&text=G",
+                    roomName: "General"
                 }
             ,
-            messages: [],
-            openChat: 0
+            messages: [
+                {
+                    // roomId: "",
+                    // roomName: "",
+                    // roomImg: "",
+                    // messages: [
+                    //     {
+                    //         userMessage: "",
+                    //         userId: "",
+                    //         userName: "",
+                    //         userImg: ""
+                    //     }
+                    // ]
+                }
+            ],
+            openChat: 0,
+            myPerson: {
+                myId: "",
+                myName: "",
+                myImg: ""
+            }
         };
 
         this.chatBodyPrev = React.createRef();
@@ -82,9 +57,8 @@ class App extends Component {
         this.socket = io('http://localhost:3000');
 
 
-        this.socket.on('chat message', (message, userId, name, img, receiverId) => {
-            this.addMessage(message, userId, name, img);
-           // this.setState({ messages: messages });
+        this.socket.on('chat message', (message, userId, name, img, receiverId, receiverImg, receiverName) => {
+            this.addMessage(message, userId, name, img, receiverId, receiverImg, receiverName);
          });
 
 
@@ -92,10 +66,9 @@ class App extends Component {
             this.myConnect++;
            this.numberOfUsers = numberOfUsers;
            if(this.myConnect === 1){
-               this.userId = userId;
-               this.name = name;
-               this.img = img;
-               console.log('user connected ', this.userId);
+               this.state.myPerson.myId = userId;
+               this.state.myPerson.myName = name;
+               this.state.myPerson.myImg = img;
            }
            this.setState({persons: activeUsers})
          });
@@ -113,28 +86,58 @@ class App extends Component {
         this.sendMessage = this.sendMessage.bind(this);
     }
 
-    onPersonView(person) {
+    onPersonView(room) {
         this.state.openChat = 1;
-        console.log(person);
+        console.log(room);
+
         // this.chatBody.current.classList.remove("hidden");
         // this.chatBodyPrev.current.classList.add("hidden");
-        this.setState({ activePerson: person })
+        this.setState({ activeRoom: room }, ()=>{console.log(room);})
     }
 
-    addMessage(message, userId, name, img) {
+    addMessage(message, userId, name, img, receiverId, receiverImg, receiverName) {
         let newMessage = {
-            message: message,
-            id: userId,
-            name: name,
-            img: img
+            userMessage: message,
+            userId: userId,
+            userName: name,
+            userImg: img
         }
-        let messages = this.state.messages.slice();
-        messages.push(newMessage);
+        let newRoom = {
+            roomId: receiverId,
+            roomName: receiverName,
+            roomImg: receiverImg,
+            messages: [
+                newMessage
+            ]
+        }
+        let messages = [];
+        let rooms = [];
+        let findRoom = 0;
+        rooms = this.state.messages.slice();
+
+        if (this.state.messages.length === 0){
+            rooms.push(newRoom);
+        }
+        else {
+            this.state.messages.forEach(item =>{
+                console.log(item, receiverId, newMessage);
+                if (item.roomId === receiverId){
+                    messages = item.messages.slice();
+                    messages.push(newMessage);
+                    findRoom = 1;
+                }
+            })
+        }
+
+        if(findRoom === 0){
+            rooms.push(newRoom);
+        }
+
         this.setState({ messages: messages });
-        console.log("chat message ", messages);
-        userId === this.userId ? this.chatInput.current.value = '' : "";
+        console.log(messages);
+        userId === this.state.myPerson.myId ? this.chatInput.current.value = '' : "";
         const chatMessages = document.querySelector('.Chat__messages');
-        chatMessages.scrollTop = chatMessages.scrollHeight;
+        // chatMessages.scrollTop = chatMessages.scrollHeight;
 
         // document.querySelectorAll('[for="first_name"]')[0].classList.remove('active');
     }
@@ -146,9 +149,10 @@ class App extends Component {
     }
 
     sendMessage(){
-        if(this.chatInput.current.value !== '')
-            this.socket.emit('chat message', this.chatInput.current.value, this.userId, this.name, this.img, this.state.activePerson.key);
-
+        if(this.chatInput.current.value !== ''){
+            console.log(this.state.activeRoom.roomId);
+            this.socket.emit('chat message', this.chatInput.current.value, this.state.myPerson.myId, this.state.myPerson.myName, this.state.myPerson.myImg, this.state.activeRoom.roomId, this.state.activeRoom.roomImg, this.state.activeRoom.roomName);
+        }
     }
 
 
@@ -162,7 +166,7 @@ class App extends Component {
             </nav>,
             <div className="App container Chat" >
                 <Row>
-                    <PersonList persons={this.state.persons} onView={this.onPersonView} userId={this.userId} roomId="General"/>
+                    <PersonList persons={this.state.persons} onView={this.onPersonView} userId={this.state.myPerson.myId} roomId="General"/>
                     <Col s={8} m={8} xl={6} l={8} className="grid-example Chat__body-wrap">
                         <div className="Chat__body row" >
                             {this.state.openChat === 0 ?
@@ -178,8 +182,8 @@ class App extends Component {
                                     </Row>
                                 </div> :
                                 <div className="Chat__body-wrapper">
-                                    <ChatHeader onPersonView={this.state.activePerson} />
-                                    <ChatBody messages={this.state.messages} persons={this.state.persons} />
+                                    <ChatHeader onPersonView={this.state.activeRoom} />
+                                    <ChatBody messages={this.state.messages} activeRoom={this.state.activeRoom} />
                                     <Col s={12} className="Chat__input">
                                         <Col s={11} className="input-field">
                                             <input s={11} id="first_name" type="text" ref={this.chatInput} onKeyPress={this.handleKeyPress}/>
