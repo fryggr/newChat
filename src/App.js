@@ -117,7 +117,7 @@ class App extends Component {
             // }
         // ]
         let messages = [];
-        let rooms = [];
+        let rooms = this.state.messages.slice();
         let findRoom = 0;
 
         if (this.state.messages.length === 0){
@@ -125,15 +125,20 @@ class App extends Component {
             this.setState({ messages: rooms });
         }
         else {
-            rooms = this.state.messages.slice();
-            this.state.messages.forEach(item =>{
+            let room = [];
+
+            this.state.messages.forEach((item, index) =>{
                 // console.log("this.state.messages: ", item);
-                // if (item.roomId === receiverId){
-                    messages = item.messages.slice();
-                    messages.push(newMessage);
+                if (item.roomId === receiverId){
+                    // room = item.slice();
+                    // messages = item.messages.slice();
+                    // messages.push(newMessage);
+                    item.messages.push(newMessage);
+                    rooms = this.state.messages.slice();
+                    // rooms.push(item);
                     findRoom = 1;
-                    this.setState({ [item.messages]: messages });
-                // }
+                    this.setState({messages: rooms });
+                }
             })
             if(findRoom === 0){
                 rooms.push(newRoom);

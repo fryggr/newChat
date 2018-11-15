@@ -5,9 +5,9 @@ import {ChatMessage} from "./../ChatMessage/ChatMessage.js";
 export const ChatBody = props => {
     let findMessages = [];
     props.messages.forEach(messages => {
-        // if(messages.roomId === props.activeRoom.roomId){
+        if(messages.roomId === props.activeRoom.roomId){
             findMessages = messages.messages.slice();
-        // }
+        }
     })
     return (
         <Col s={12} className="Chat__messages">

@@ -69,7 +69,7 @@ io.on('connection', function(socket){
     socket.on('chat message', function(msg, userId, name, img, receiverId, receiverImg, receiverName){
         console.log(msg, receiverId);
         io.to(receiverId).emit('chat message', msg, userId, name, img, receiverId, receiverImg, receiverName);
-        io.to(userId).emit('chat message', msg, userId, name, img, receiverId, receiverImg, receiverName);
+        if(receiverId !== userId) io.to(userId).emit('chat message', msg, userId, name, img, receiverId, receiverImg, receiverName);
         // io.emit('chat message', msg, userId, name, img);
     });
 
