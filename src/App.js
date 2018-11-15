@@ -25,21 +25,7 @@ class App extends Component {
                     roomName: "General"
                 }
             ,
-            messages: [
-                {
-                    // roomId: "",
-                    // roomName: "",
-                    // roomImg: "",
-                    // messages: [
-                    //     {
-                    //         userMessage: "",
-                    //         userId: "",
-                    //         userName: "",
-                    //         userImg: ""
-                    //     }
-                    // ]
-                }
-            ],
+            messages: [],
             openChat: 0,
             myPerson: {
                 myId: "",
@@ -48,7 +34,6 @@ class App extends Component {
             }
         };
 
-        this.chatBodyPrev = React.createRef();
         this.chatBody = React.createRef();
         this.chatInput = React.createRef();
         this.myConnect = 0;
@@ -56,11 +41,13 @@ class App extends Component {
         // this.socket = io('37.1.218.55:3000');
         this.socket = io('http://localhost:3000');
 
+        // Event when user sending or receiving the message
 
         this.socket.on('chat message', (message, userId, name, img, receiverId, receiverImg, receiverName) => {
             this.addMessage(message, userId, name, img, receiverId, receiverImg, receiverName);
          });
 
+        // Event when user connected to the server
 
         this.socket.on('user connected', (activeUsers, numberOfUsers, userId, name, img) => {
             this.myConnect++;
@@ -72,6 +59,8 @@ class App extends Component {
            }
            this.setState({persons: activeUsers})
          });
+
+        // Event when user disconnected from the server
 
         this.socket.on('user disconnected', (activeUsers, numberOfUsers) => {
            this.numberOfUsers = numberOfUsers;
@@ -86,14 +75,14 @@ class App extends Component {
         this.sendMessage = this.sendMessage.bind(this);
     }
 
+    // When user choose the room or private dialog with other user
+
     onPersonView(room) {
         this.state.openChat = 1;
-        console.log(room);
-
-        // this.chatBody.current.classList.remove("hidden");
-        // this.chatBodyPrev.current.classList.add("hidden");
         this.setState({ activeRoom: room }, ()=>{console.log(room);})
     }
+
+    // A method that adds a new message to room or other user
 
     addMessage(message, userId, name, img, receiverId, receiverImg, receiverName) {
         let newMessage = {
@@ -110,37 +99,56 @@ class App extends Component {
                 newMessage
             ]
         }
+        console.log("newRoom: ", newRoom);
+
+        // messages: [
+            // {
+                // roomId: "",
+                // roomName: "",
+                // roomImg: "",
+                // messages: [
+                //     {
+                //         userMessage: "",
+                //         userId: "",
+                //         userName: "",
+                //         userImg: ""
+                //     }
+                // ]
+            // }
+        // ]
         let messages = [];
         let rooms = [];
         let findRoom = 0;
-        rooms = this.state.messages.slice();
 
         if (this.state.messages.length === 0){
             rooms.push(newRoom);
+            this.setState({ messages: rooms });
         }
         else {
+            rooms = this.state.messages.slice();
             this.state.messages.forEach(item =>{
-                console.log(item, receiverId, newMessage);
-                if (item.roomId === receiverId){
+                // console.log("this.state.messages: ", item);
+                // if (item.roomId === receiverId){
                     messages = item.messages.slice();
                     messages.push(newMessage);
                     findRoom = 1;
-                }
+                    this.setState({ [item.messages]: messages });
+                // }
             })
+            if(findRoom === 0){
+                rooms.push(newRoom);
+                this.setState({ messages: rooms });
+            }
         }
 
-        if(findRoom === 0){
-            rooms.push(newRoom);
-        }
 
-        this.setState({ messages: messages });
-        console.log(messages);
+        console.log(this.state.messages);
         userId === this.state.myPerson.myId ? this.chatInput.current.value = '' : "";
         const chatMessages = document.querySelector('.Chat__messages');
         // chatMessages.scrollTop = chatMessages.scrollHeight;
-
-        // document.querySelectorAll('[for="first_name"]')[0].classList.remove('active');
     }
+
+    // Method that add message when user press Enter
 
     handleKeyPress(e) {
         if (e.charCode === 13) {
@@ -148,9 +156,10 @@ class App extends Component {
         }
     }
 
+    // Method that causes an event that sends a message to the server
+
     sendMessage(){
         if(this.chatInput.current.value !== ''){
-            console.log(this.state.activeRoom.roomId);
             this.socket.emit('chat message', this.chatInput.current.value, this.state.myPerson.myId, this.state.myPerson.myName, this.state.myPerson.myImg, this.state.activeRoom.roomId, this.state.activeRoom.roomImg, this.state.activeRoom.roomName);
         }
     }
