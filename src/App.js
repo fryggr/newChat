@@ -85,6 +85,7 @@ class App extends Component {
     // A method that adds a new message to room or other user
 
     addMessage(message, userId, name, img, receiverId, receiverImg, receiverName) {
+        console.log(this.state.myPerson.myId);
         let newMessage = {
             userMessage: message,
             userId: userId,
@@ -197,7 +198,7 @@ class App extends Component {
                                 </div> :
                                 <div className="Chat__body-wrapper">
                                     <ChatHeader onPersonView={this.state.activeRoom} />
-                                    <ChatBody messages={this.state.messages} activeRoom={this.state.activeRoom} />
+                                    <ChatBody messages={this.state.messages} activeRoom={this.state.activeRoom} myId={this.state.myPerson.myId}/>
                                     <Col s={12} className="Chat__input">
                                         <Col s={11} className="input-field">
                                             <input s={11} id="first_name" type="text" ref={this.chatInput} onKeyPress={this.handleKeyPress}/>

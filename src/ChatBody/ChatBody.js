@@ -4,9 +4,18 @@ import {ChatMessage} from "./../ChatMessage/ChatMessage.js";
 
 export const ChatBody = props => {
     let findMessages = [];
+    console.log(props.activeRoom.roomId);
     props.messages.forEach(messages => {
-        if(messages.roomId === props.activeRoom.roomId){
+        // console.log(messages.roomId);
+        if(messages.roomId === props.activeRoom.roomId || messages.roomId === props.myId){
             findMessages = messages.messages.slice();
+        // }
+            // messages.messages.forEach(message => {
+            //     if(props.activeRoom.roomId === message.userId){
+            //         console.log(message);
+            //         findMessages.push(message);
+            //     }
+            // })
         }
     })
     return (
